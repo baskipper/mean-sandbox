@@ -15,9 +15,6 @@ function validateLength(v)
     return v.length <=15;
 }
 
-
-
-
 /**
  * Category Schema
  */

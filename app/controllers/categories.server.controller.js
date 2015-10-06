@@ -11,16 +11,15 @@ var mongoose = require('mongoose'),
 /**
  * Create a Category
  */
-exports.create = function(req, res) {
+exports.create = function (req, res) {
     var category = new Category(req.body);
-    category.save(function(err) {
-        if (err){
+    category.save(function (err) {
+        if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             })
         }
-        else
-        {
+        else {
             res.status(201).json(category);
         }
     })
@@ -29,36 +28,63 @@ exports.create = function(req, res) {
 /**
  * Show the current Category
  */
-exports.read = function(req, res) {
-
+exports.read = function (req, res) {
+    Category.findById(req.params.categoryID).exec(function (err, category) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        }
+        else {
+            if (!category) {
+                return res.status(404).send({
+                    message: 'Category not found'
+                });
+            }
+            res.json(category);
+        }
+    })
 };
 
 /**
  * Update a Category
  */
-exports.update = function(req, res) {
+exports.update = function (req, res) {
+    var category = req.category;
 
+    category = _.extend(category, req.body);
+    category.save(function(err){
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        }
+            else
+            {
+                res.json(category);
+            }
+        }
+    )
 };
 
 /**
  * Delete an Category
  */
-exports.delete = function(req, res) {
+exports.delete = function (req, res) {
 
 };
 
 /**
  * List of Categories
  */
-exports.list = function(req, res) {
-    Category.find().exec(function(err, categories){
+exports.list = function (req, res) {
+    Category.find().exec(function (err, categories) {
         if (err) {
             return res.status(400).send({
                 message: erroHandler.getErrorMessage(err)
             });
         }
-        else
-        {
+        else {
             res.json(categories);
         }
     })
