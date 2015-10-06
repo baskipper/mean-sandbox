@@ -34,7 +34,16 @@ var CategorySchema = new Schema({
         default: '',
         // types have specific functions e.g. trim, lowercase, uppercase (http://mongoosejs.com/docs/api.html#schema-string-js)
         trim: true
-
+    },
+    name: {
+        type: String,
+        default: '',
+        trim: true,
+        unique: true,
+        // make this a required field
+        required: 'name cannot be blank',
+        // wires in a custom validator function(http://mongoosejs.com/docs/api.html#schametype_SchemaTyep-validate).
+        validate: [validateLength, 'name must be 15 chars in length or less']
     }
 });
 
