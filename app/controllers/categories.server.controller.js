@@ -12,7 +12,18 @@ var mongoose = require('mongoose'),
  * Create a Category
  */
 exports.create = function(req, res) {
-
+    var category = new Category(req.body);
+    category.save(function(err) {
+        if (err){
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            })
+        }
+        else
+        {
+            res.status(201).json(category);
+        }
+    })
 };
 
 /**
