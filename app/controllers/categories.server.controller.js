@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+    errorHandler = require('./errors.server.controller'),
+    Category = mongoose.model('Category'),
     _ = require('lodash');
 
 /**
@@ -38,5 +40,15 @@ exports.delete = function(req, res) {
  * List of Categories
  */
 exports.list = function(req, res) {
-
+    Category.find().exec(function(err, categories){
+        if (err) {
+            return res.status(400).send({
+                message: erroHandler.getErrorMessage(err)
+            });
+        }
+        else
+        {
+            res.json(categories);
+        }
+    })
 };
