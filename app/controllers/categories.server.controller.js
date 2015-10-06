@@ -52,15 +52,15 @@ exports.read = function (req, res) {
 exports.update = function (req, res) {
     var category = req.category;
 
+    //extend is an update function. Basically, 'overwrite all values in category with corresponding values from req.body'
     category = _.extend(category, req.body);
-    category.save(function(err){
-        if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
-        }
-            else
-            {
+    category.save(function (err) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            }
+            else {
                 res.json(category);
             }
         }
@@ -71,7 +71,18 @@ exports.update = function (req, res) {
  * Delete an Category
  */
 exports.delete = function (req, res) {
+    var category = req.category;
 
+    category.remove(function (err) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            })
+        }
+        else {
+            res.json(category);
+        }
+    })
 };
 
 /**
@@ -88,4 +99,23 @@ exports.list = function (req, res) {
             res.json(categories);
         }
     })
+};
+
+exports.categoryByID = function (req, res, next, id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({
+            message: 'Category is invalid'
+        });
+    }
+    Category.findById(id).exec(function (err, category) {
+        if (err) return next(err);
+        if (!category) {
+            return res.status(404).send({
+                message: 'Category not found'
+            })
+        }
+        req.category = category;
+        next();
+    });
+
 };
